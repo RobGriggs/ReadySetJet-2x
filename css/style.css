@@ -1,0 +1,179 @@
+html {
+	background: url(../img/background.jpg) no-repeat center center fixed; 
+  	-webkit-background-size: cover;
+  	-moz-background-size: cover;
+  	-o-background-size: cover;
+  	background-size: cover;
+  	width: 100%;
+  	height: 100%;
+  	overflow:hidden;
+}
+
+body {
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: 100%;
+	background-color: transparent;
+}
+
+.coreBox {
+	background: rgba(0,0,0,0.2);
+	border: rgba(0,0,0,0.5);
+	border-radius: 5px;
+	padding: 10px;
+	margin-left: 25%;
+	margin-right: 25%;
+	margin-top: 15%;
+	color: white;
+	text-align: center;
+}
+
+.dataCore {
+	postion: fixed;
+    background: rgba(0,0,0,0.2);
+    border: rgba(0,0,0,0.5);
+    border-radius: 5px;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    color: white;
+    max-width: 970px;
+    right: 0;
+    left: 0;
+
+}
+
+.innerCore{
+	max-height: 10%;
+}
+
+.actionBox {
+	font-size: 2em;
+	display: inline-block;
+	background: rgba(255,255,255,0.9);
+	color: black;
+	border: white;
+	border-radius: 5px;
+	width:33%;
+}
+
+img {
+	max-height: 160px;
+}
+
+.fa {
+	margin: 10px;
+}
+
+#budget:hover {
+    color: green; /* make this whatever you want */
+}
+
+#activity:hover {
+    color: lightblue;
+}
+
+#weather:hover {
+    color: gold;
+}
+
+.result-container {
+	width: 100%;
+	font-size: 2em;
+	display: inline-block;
+	background: rgba(255,255,255,0.9);
+	color: black;
+	border: white;
+	border-radius: 5px;
+}
+
+.location {
+	display: inline-block;
+	text-align: left;
+}
+
+.sortscore {
+	padding: 3px;
+	display: inline-block;
+	text-align: right;
+}
+
+.weather-container {
+	width: 100%;	
+	text-align: center;
+	border: black;
+    border-radius: 5px;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.weather-smallday {
+	border-style: solid;
+	border-width: 1px;
+	font-size: 12px;
+	padding: 3px;
+	display: inline-block;
+}
+
+.airport-info{
+	display: inline-block;
+}
+
+.budget-breakdown-container{
+	display: inline-block;
+	border-style: solid;
+	border-width: 1px;
+	font-size: 12px;
+	padding: 3px;
+	text-align: top;	
+}
+
+.budget-breakdown{
+	display: none;
+}
+
+.filter-controls{
+    display: none;
+    background: rgba(0,0,0,0.2);
+    border: rgba(0,0,0,0.5);
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 2%;
+    color: white;
+}
+
+.ui-slider .ui-slider-handle {
+
+    cursor: default;
+    height: 1.2em;
+    position: absolute;
+    width: 1.2em;
+    z-index: 2;
+}
+
+    .steps-2 {
+    border: 1px solid transparent; /*follows #slider2 style for sizing purposes */
+   /* width: 800px; */
+    position: relative; 
+    height: 30px;
+    }
+    
+    .tick { 
+        border: 1px solid transparent; /*follows slide handle style for sizing purposes*/
+        position: absolute;
+        width: 1.2em;
+        margin-left: -.6em;
+        text-align:center;
+        left: 0;
+    }
+    
+    .last-tick {
+        border: 1px solid transparent; /*follows slide handle style for sizing purposes*/
+        position: absolute;
+        width: 1.2em;
+        margin-left: -.6em;
+        text-align:left;
+        left: 0;    
+    }
