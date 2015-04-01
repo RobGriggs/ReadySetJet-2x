@@ -1,6 +1,6 @@
 <?php
 
-class WeatherView
+class WeatherView implements View
 {
     function __construct()
     {

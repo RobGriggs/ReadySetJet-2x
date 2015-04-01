@@ -1,6 +1,6 @@
 <?php
 
-class BudgetView
+class BudgetView implements View
 {
     private $dataHandler;
     

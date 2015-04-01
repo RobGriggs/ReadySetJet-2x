@@ -1,6 +1,6 @@
 <?php
 
-class ActivityView
+class ActivityView implements View
 {
     function __construct()
     {
