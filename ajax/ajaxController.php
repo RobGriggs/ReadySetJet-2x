@@ -7,7 +7,6 @@
  * and then sends the view request off to the view constructor
  */
 
- 
 initilize();
  
 /**
@@ -20,13 +19,16 @@ function initilize(){
 	
 	if (!empty($_POST['query'])) {
 	    try { 
-	        $requestedView = $_POST['query'];        
+	        $requestedView = $_POST['query'];  
+			
+			$type = gettype($requestedView);
+
 	        $view = new viewConstructor($requestedView);
 	    } catch (exception $e) {
 	        $logger = Registry::get('Logger');
 	        $logger->logException($e);
 	    }
 	} else {
-	    echo "Page Request Error"; 
+	    echo "Page Request Error";
 	}
 }
