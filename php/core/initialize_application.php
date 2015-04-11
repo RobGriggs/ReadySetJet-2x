@@ -4,7 +4,7 @@
  * @author Rob Griggs
  * 
  * Initialization script that builds dependencies and populates registry with
- * globally needed classes 
+ * globally requried classes 
  */
 
 /*
@@ -49,3 +49,4 @@ $registry->set('DataHandler', $dataHandler);
  //fire up the autoloader
 chdir($callingDir);
 require_once('autoloader.php'); 
+new Autoloader();
