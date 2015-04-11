@@ -1,35 +1,54 @@
 <?php
-
-/*
+/**
+ * Holds class used to query, retrieve, and store images associated with application activities
+ * @Rob Griggs
+ */
+ 
+/**
+ * Queries, retrieves, & stores images associated with application activities
+ *
  * Uses Bing Image Search
  * Call Limit: 5000 per month
- * Call timeout: ?
- * 
+ * Call timeout: ? 
  */
-
-class imageAPI
+class ImageAPI
 {
-	private $apiKey;
-	private $dataHandler;
-	private $streamContext;
-	private $apiCallLimitTime = 3; //seconds for rest
+	/**
+	 * @var string @apiKey authentication key used to query API
+	 * @var DataHandler $dataHandler Provides database query and update services to class
+	 * @var $streamContext Stream context used to query API
+	 * @var int $apiCallLimitTime seconds to wait between successful queries to API in order to avoid exceeding call limit timeout 
+	 */
 	
+	private $apiKey,
+			$dataHandler,
+			$streamContext,
+			$apiCallLimitTime = 3;
+	
+	/**
+	 * Initialize class, set instance variables, create stream context
+	 * @param string $apiKey authentication key for Bing.com
+	 */
 	public function __construct($apiKey)
     {
         $this->apiKey = $apiKey;
-        $this->streamContext = $this->create_API_stream_context($apiKey);
+        $this->streamContext = $this->create_API_stream_context();
         $this->dataHandler = Registry::get('DataHandler');
     }
 	
+	/**
+	 * Call to initiate update of images
+	 * @return void
+	 */
 	public function update_activity_images()
     {
         
         $time = microtime(true);
         
-		$activities = $this->get_activities($this->dataHandler);
+		$activities = $this->get_activities();
         
         foreach ($activities as $key => $values) {
-            $activityImageURLs = $this->get_image_links_for_activity($this->streamContext, $values);           
+            $activityImageURLs = $this->get_image_links_for_activity($values);           
     	    $this->dataHandler->update_activity_images($values['activity_id'], $activityImageURLs);
         }
         
@@ -38,12 +57,14 @@ class imageAPI
         echo "finished activity image update in: ".$timePassed.' seconds';
     }
 
-    // Encode the credentials and create the stream context. 	
-	private function create_API_stream_context($apiKey)
+	/**
+	 * Create stream context to use for querying API
+	 * @return stream context
+	 */ 	
+	private function create_API_stream_context()
 	{
- 
+		$apiKey = $this->apiKey;
         $auth = base64_encode("$apiKey:$apiKey"); 
-        
         $data = array( 
                 'http' => array( 
                     'request_fulluri' => true, 
@@ -51,19 +72,26 @@ class imageAPI
                     'header' => 'Authorization: Basic '.$auth
                         )
                     );
-    
         $context = stream_context_create($data); 
-		
         return $context;
 	}
-	
-	private function get_activities(DataHandler $db)
+
+	/**
+	 * Retrieves activity data from application database
+	 * @return array activies and accompanying activity information, descriptions, locations, etc..
+	 */
+	private function get_activities()
     {
-        $activities = $db->get_activity_data();
+        $activities = $this->dataHandler->get_activity_data();
         return $activities;
     }
 	
-	private function get_image_links_for_activity($streamContext, $activityData)
+	/**
+	 * Retrieves image URLS associated with an activity
+	 * @param array $activityData Activity type, short description, and state/location data
+	 * @return array|false array of image URLS (thumbnails & detailed), false on failure
+	 */
+	private function get_image_links_for_activity(array $activityData)
 	{
         //build the query from items in the database: activity type, activity, state);
         
@@ -80,7 +108,7 @@ class imageAPI
         $requestURI = 'https://api.datamarket.azure.com/Bing/Search/Image?$format=json&Query='.$searchString;
             
         // Get the response from Bing. With the exception of a total connection loss, Bing will always reply
-        $parsed_response = file_get_contents($requestURI, 0, $streamContext); 
+        $parsed_response = file_get_contents($requestURI, 0, $this->streamContext); 
        
         //Decode the returned data
         $parsed_response = json_decode($parsed_response);
@@ -111,5 +139,4 @@ class imageAPI
         sleep($this->apiCallLimitTime);
         return $images;
     }
-
 }
