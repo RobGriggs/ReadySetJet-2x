@@ -1,29 +1,39 @@
 <?php
-
-//Car and Hotel Data is handled by 
+/**
+ * Holds CarAndHotelAPI class
+ */
+ 
+/**
+ * Queries Hotwire API for car and hotel rental rates, parses data and pushes back to application DB
+ *
+ * API CALL LIMITS IN PLACE:
+ * CALL ALLOWANCE: 5,000 per day
+ * SPEED ALLOWANCE: 2 requests per second 
+ */
 Class CarAndHotelAPI
 {
+	/**
+	 * @var string $apiKey
+	 * @var DataHandler $dataHandler
+	 * @var array $locations key value array, values include location (mainly in form of airport code) and location_id
+	 * @var array $queryDates dates to query, formatted mm/dd/yyyy
+	 * @var array $daysToRetrieve Number of days in future that rates will be checked for, careful each additional day will multiply the number of API calls substantially
+	 * @var string $pickupTime 	Ideal car pickup time because all car agencies open by this hour, preventing errors from hotwire about any local agencies being closed
+	 * @var string $dropoffTime Ideal car dropoff time because all car agencies are still open at this hour, preventing errors from hotwire about any local agencies being closed
+	 */
+	private $apiKey, 
+    		$dataHandler,
+    		$locations,
+    		$queryDates,
+			$daysToRetrieve = 10, 
+			$callLimitTime = 3,
+			$pickupTime = "20:00",
+			$dropoffTime = "20:00";
 	
-    /**
-     * API CALL LIMITS IN PLACE:
-     * CALL ALLOWANCE: 5,000 per day
-     * SPEED ALLOWANCE: 2 requests per second 
-     */
-    
-	private $apiKey; 
-	private $database; 
-    private $dataHandler;
-    private $locations; //key value array, location => location_id ex. airport => airport_id
-    private $queryDates; //key value array, 
-	
-	//call limit time, to be set as long, or as longer than the allowed time between API calls 
-	private $callLimitTime = 3; //seconds
-	private $daysToRetrieve = 10; //the number of days that rates will be checked for, careful this will multiply the number of request for each airport
-	
-	//These times are ideal because all car agencies are open at these hours, preventing errors from hotwire about any local agencies being closed
-	private $pickupTime = "20:00" ;
-	private $dropoffTime = "20:00";
-	
+	/**
+	 * Initialize class, retrieve location data from DB, generate calendar dates to query against
+	 * @param string $apiKey authentication string used used query Hotwire.com
+	 */
 	function __construct($apiKey)
 	{
 		$this->apiKey = $apiKey;
@@ -32,64 +42,82 @@ Class CarAndHotelAPI
         $this->dataHandler = $registry->get('DataHandler');
         	
         $this->locations = $this->dataHandler->get_airports();
-        
-        
-        //for debugging
-        //$this->locations = $this->airports = array( array( 'airport_id' =>'78', 'airport_code' => 'HNL'));
-        
         $this->queryDates = $this->generate_query_dates();
     }
     
+	/**
+	 * Call to retrieve new car and hotel rates for application locations and to push said results to database
+	 * @return void
+	 */
     public function update_rates()
     {
-        $this->update_car_and_hotel_rates($this->database, $this->locations, $this->queryDates);
+        $this->update_car_and_hotel_rates();
     }
     
-    
-    //array containing the next ten days in format mm/dd/yyyy
+    /**
+	 * Generates an array of calendar dates to retrive information for formatted mm/dd/yyyy
+	 * Uses instance variable $daysToRetrieve to determine how many dates to generate
+	 * @return array calendar dates
+	 */
     private function generate_query_dates()
     {
         $dates = array();
-        
-        for( $i=0; $i<=9; $i++){
+        $daysToRetrieve = $this->daysToRetrieve;
+		
+        for( $i=0; $i<$daysToRetrieve; $i++){
             $dates[] = date('m/d/Y', strtotime('+'.$i.'days')); 
         }
-                
         return $dates; 
     }
     
-    //engine function that drives rate updates
-	private function update_car_and_hotel_rates($db, $airports, $dates)
+	/**
+	 * Loops through locations, calls query method, and then calls db update method
+	 * 
+	 * Loops though all locations, and for each query date set when the class was initialized, queries API for car rate, updates database, queries API for hotel rate, and updates database.
+	 * This takes a long time because of API call limits. 
+	 * @deprecated For now the update script is setup the way it is so that the most current rates get pushed forward as soon as they're available, it
+	 * isn't ideal, but some larger decisions about the systems behavior need to be made before this gets addressed.
+	 */
+	private function update_car_and_hotel_rates()
 	{
+		$airports = $this->locations;
+		$dates = $this->queryDates;
+		
 	    $updateDayNumber = 0;
         
 	    //foreach date
-	    foreach($dates as $startDate){
+	    foreach ($dates as $startDate) {
 	    
             //foreach airport    
-            foreach($airports as $airport => $airportData){
-                
+            foreach ($airports as $airport => $airportData) {
                 //query car rate
-                $carRate = $this->get_car_rate($this->apiKey, $airportData['airport_code'], $startDate, $this->pickupTime, $this->dropoffTime, $this->callLimitTime);
+                $carRate = $this->get_car_rate($airportData['airport_code'], $startDate);
                         
                 //save car rate to database
                 $this->dataHandler->update_carhotel_rate($airportData['airport_id'], 'car', $updateDayNumber, $carRate);
 
                 //query hotel rate
-                $hotelRates = $this->get_hotel_rate($this->apiKey, $airportData['airport_code'], $startDate, $this->callLimitTime);
+                $hotelRates = $this->get_hotel_rate($airportData['airport_code'], $startDate);
                 
                 //save hotel rate to database
-                $this->dataHandler->update_carhotel_rate($airportData['airport_id'], 'hotel', $updateDayNumber, $hotelRates['min'], $hotelRates['max']);
-                
+                $this->dataHandler->update_carhotel_rate($airportData['airport_id'], 'hotel', $updateDayNumber, $hotelRates['min'], $hotelRates['max']);   
             }
-        
             $updateDayNumber++;
-        
 	    }
     }
     
-    private function get_car_rate($apiKey, $airportCode, $startDate, $pickupTime, $dropoffTime, $callLimitTime)
+	/**
+	 * Queries API for a car rental rate at a given location for a given date
+	 * 
+	 * Hotwire returns lots of information, we just take the best deal, since rates for better vehicles tend to only go up by a few dollars a day
+	 * @return float|string car rental price ex. 12.50 on success, char "x" on failure
+	 */
+    private function get_car_rate($airportCode, $startDate)
     {
+    	$apiKey = $this->apiKey;
+    	$pickupTime = $this->pickupTime;
+		$dropoffTime = $this->dropoffTime;
+		
         $endDate = date('m/d/Y',strtotime($startDate . "+1 days"));
             
         // This is the querry to hotwire
@@ -98,7 +126,7 @@ Class CarAndHotelAPI
         // If the returned xml file has a key object value, populate database from the XML
         $parsed_xml = simplexml_load_file($xml_query_string);
 
-        if (isset($parsed_xml->Result->CarResult[1]->TotalPrice) == true){
+        if (isset($parsed_xml->Result->CarResult[1]->TotalPrice) == true) {
     
             $avgcar = $parsed_xml->Result->CarResult[1]->TotalPrice;
             $avgcar = round($avgcar, 2);
@@ -110,22 +138,27 @@ Class CarAndHotelAPI
             //$premium = round($premium, 2);
             //$premium = number_format((float)$premium, 2, '.', '');
             
-            sleep($callLimitTime);
-            
+            sleep($this->callLimitTime);
+			
             return $avgcar;   
         
-        } else {
-            
+		} else {
             sleep(10);   
-            return "x";
-            
+            return "x";        
         }
     }
     
-
-    private function get_hotel_rate($apiKey, $airportCode, $startDate, $callLimitTime)
+	/**
+	 * Queries Hotwire for a hotel rate
+	 * 
+	 * Iterates though all 3 & 3.5 star hotels to determine a minimum stay cost and a maximum stay cost for one night. 
+	 * Penalizes Las Vegas Hotels by 20 dollars a night because resort fees there are underreported by Hotwire
+	 * 
+	 * @return array|string array w/Min & Max rates on success, char "x" on failure
+	 */
+    private function get_hotel_rate($airportCode, $startDate)
     {
-                
+    	$apiKey = $this->apiKey;
         $rooms = 1;
         $adults = 1;
         $children = 0;
@@ -133,7 +166,6 @@ Class CarAndHotelAPI
         //query requires an end date, we'll set it for tomorrow        
         $endDate = date('m/d/Y',strtotime($startDate . "+1 days"));
 
-        // This is the querry to hotwire
         $xml_query_string = 'http://api.hotwire.com/v1/deal/hotel?apikey='.$apiKey.'&dest='.$airportCode.'&rooms='.$rooms.'&adults='.$adults.'&children='.$children.'&startdate='.$startDate.'&enddate='.$endDate;       
         
         $parsed_xml = simplexml_load_file($xml_query_string);   
@@ -143,13 +175,13 @@ Class CarAndHotelAPI
         $lowStar = 3;
         $highStar = 3.5;
         
-        if (isset($parsed_xml->Result->HotelDeal[0])){
+        if (isset($parsed_xml->Result->HotelDeal[0])) {
     
-            foreach($parsed_xml->Result->HotelDeal as $key => $values){
+            foreach ($parsed_xml->Result->HotelDeal as $key => $values) {
                 
                 $hotelStar = $values->StarRating[0];
                 
-                if($lowStar <= $hotelStar && $hotelStar <= $highStar){
+                if ($lowStar <= $hotelStar && $hotelStar <= $highStar) {
                     
                     $rate = ($values->Price);
                     
@@ -157,29 +189,23 @@ Class CarAndHotelAPI
                     if ($airportCode == 'LAS') {
                         $rate += 20;
                     }
-                    
+		 
                     $rates[] = $rate;
                 }
             }
 
-            sleep($callLimitTime);
+            sleep($this->callLimitTime);
 
-            if(empty($rates)){
+            if (empty($rates)) {
                 
                 $returnRates['min'] = 'no 3 stars';
                 $returnRates['max'] = 'no 3 stars';
                 
                 return $returnRates;
             
-            }else{
+            } else {
                 $min = intval(min($rates));
                 $max = intval(max($rates));
-                
-                echo $airportCode.PHP_EOL;
-                print_r($rates).PHP_EOL.PHP_EOL;
-                
-                echo 'min: '.$min.PHP_EOL;
-                echo 'max: '.$max.PHP_EOL;
                 
                 $returnRates = array();
                 $returnRates['min'] = $min;
@@ -190,8 +216,10 @@ Class CarAndHotelAPI
         } else {
             
             sleep(10);
-            
-            return 'x';
+			$failedRates = array();
+            $failedRates['min'] = 'x';
+            $failedRates['max'] = 'x';
+			return $failedRates;
         }
     }
 }
