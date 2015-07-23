@@ -9,7 +9,7 @@ $(document).ready(function(){
 	// Buttons & Sliders
 
 	//initial view selector button
-    $( ".actionBox" ).click(function(){
+    $( ".actionButton" ).click(function(){
    	  var param = $(this).attr("id");
 	  getData(param);
 	});
@@ -134,7 +134,7 @@ $(document).ready(function(){
     }
 
     function renderOutput(preformattedOutput){	
-    	$(".innerCore").empty().append(preformattedOutput);
+    	$(".dataCore").empty().append(preformattedOutput);
 	}
 
     // View rendering, output

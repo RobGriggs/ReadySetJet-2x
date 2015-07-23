@@ -28,55 +28,90 @@
   
   <body>
 
-    <div class="filter-controls row-fluid">
-        <div class="span3">
-            <label class="checkbox inline"><input id="car_checkbox" type="checkbox" value="true" checked>Car Rental</label>
-            <label class="checkbox inline"><input id="hotel_checkbox" type="checkbox" value="true" checked>Hotel Stay</label>           
-        </div>
-        <div class="slider span4">
-			<p>
-	  			<!--<label for="amount">Price range:</label>-->
-	  			<input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
-			</p>
-            <div id="slider-range"></div>
-                        <div class="steps-2">
-                <span class="tick">|<br>Today</span>
-                <span class="tick" style="left: 11.1%;">|<br></span>
-                <span class="tick" style="left: 22.2%;">|<br></span>
-                <span class="tick" style="left: 33.3%;">|<br></span>
-                <span class="tick" style="left: 44.4%;">|<br></span>
-                <span class="tick" style="left: 55.5%;">|<br></span>
-                <span class="tick" style="left: 66.6%;">|<br></span>
-                <span class="tick" style="left: 77.7%;">|<br></span>
-                <span class="tick" style="left: 88.8%;">|<br></span>
-                <span class="tick" style="left: 99.9%;">|<br></span>
-                <span class="tick" style="left: 100%;">|<br>+10</span>
+<div class="container">
+    
+    <div class="filter-control-border">
+        <div class="filter-controls row">
+            
+            <div class="col-md-12">
+                <div class="col-md-2">
+                    <label class="checkbox inline"><input id="car_checkbox" type="checkbox" value="true" checked>Car Rental</label>
+                    <label class="checkbox inline"><input id="hotel_checkbox" type="checkbox" value="true" checked>Hotel Stay</label>
+                </div>            
+        
+                <div class="col-md-8">
+                    <div class="slider">
+                        <p>
+                            <!--<label for="amount">Price range:</label>-->
+                            <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                        </p>
+                        
+                        <div id="slider-range"></div>
+                                    <div class="steps-2">
+                            <span class="tick">|<br>Today</span>
+                            <span class="tick" style="left: 11.1%;">|<br></span>
+                            <span class="tick" style="left: 22.2%;">|<br></span>
+                            <span class="tick" style="left: 33.3%;">|<br></span>
+                            <span class="tick" style="left: 44.4%;">|<br></span>
+                            <span class="tick" style="left: 55.5%;">|<br></span>
+                            <span class="tick" style="left: 66.6%;">|<br></span>
+                            <span class="tick" style="left: 77.7%;">|<br></span>
+                            <span class="tick" style="left: 88.8%;">|<br></span>
+                            <span class="tick" style="left: 99.9%;">|<br></span>
+                            <span class="tick" style="left: 100%;">|<br>+10</span>
+                        </div>
+                    </div>               
+                </div>
+    
+                <div class="update col-sm-2">
+                    <button type="button" class="update-button btn btn-default btn-lg">
+                      <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Filter
+                    </button> 
+                </div>
             </div>
-        </div>
-
-        <div class="update span3">
-            <button type="button" class="update-button btn btn-default btn-lg">
-              <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Filter
-            </button> 
+        
         </div>
     </div>
-
-  	<div class="coreBox">
-    	<div class="innerCore">
-    		<h1>What's more important?</h1>
-   			<div id="budget" class="actionBox">
-   				<i class="fa fa-money fa-5x"></i>
-   				<p>Budget</p> 
-   			</div>
-   			<div id="activity" class="actionBox">
-   				<i class="fa fa-ship fa-5x"></i>
-   				<p>Activity</p> 
-   			</div>
-   			<div id="weather" class="actionBox">
-   				<i class="fa fa-sun-o fa-5x"></i>
-   				<p>Weather</p>
-   			</div>
-   		</div>
+  	
+  	<!-- coreBox is where initial sorting priority choice is made-->
+  	<div class="coreBox col-md-offset-2 col-md-8">
+    	
+    	<div class="row">
+    	    <div class="col-md-12">
+            <h1>What's more important?</h1>    	        
+    	    </div>
+    	</div>
+        
+        <div class='all-actionButtons-container row'>
+            <div class='actionButton-container col-md-4'>
+                <div id="budget" class="actionButton">
+                    <i class="fa fa-money fa-5x"></i>
+                    <p>Budget</p> 
+                </div>                
+            </div>
+            <div class='actionButton-container col-md-4'>
+                <div id="activity" class="actionButton">
+                    <img class="coming-soon" src='img/soon.png'>
+                    <i class="fa fa-ship fa-5x"></i>
+                    <p>Activity</p> 
+                </div>                
+            </div>
+            <div class='actionButton-container col-md-4'>
+                <div id="weather" class="actionButton">
+                    <img class="coming-soon" src='img/soon.png'>
+                    <i class="fa fa-sun-o fa-5x"></i>
+                    <p>Weather</p>
+                </div>                
+            </div>        
+        </div>
+        
 	</div>
+	
+	<!-- dataCore is where data populates after ajax call -->
+	<div class="dataCore row">	    
+	</div>
+	
+</div>
+
   </body>
 </html>
