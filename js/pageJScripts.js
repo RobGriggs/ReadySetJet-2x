@@ -12,6 +12,7 @@ $(document).ready(function(){
     $( ".actionButton" ).click(function(){
    	  var param = $(this).attr("id");
 	  getData(param);
+	  console.log("clicked "+param);
 	});
 	
 	// initiate resort of data within view
@@ -91,6 +92,7 @@ $(document).ready(function(){
 			    globalData = data[1];
 
 			    initilizeSlider();
+			    console.log("viewified data");
 				viewifyReturnData(data[1], viewRequestType);
 			} 
 		});  
@@ -101,6 +103,7 @@ $(document).ready(function(){
 		
 		if (viewRequestType == 'budget') {
 			renderNewBudget(data, 0);
+			console.log('renderNewBudget');
 		}
 		
 		if (viewRequestType == 'activity') {
@@ -120,6 +123,7 @@ $(document).ready(function(){
             $(this).attr("class","dataCore").fadeIn();
             $('.filter-controls').attr("display","block").fadeIn();
             
+            console.log('renderBudget');
 			renderBudget(jsonData, day, 3);
         });
     }
@@ -149,19 +153,22 @@ $(document).ready(function(){
             
             	//each bracket contains any number of trips in that price bracket
             	for(var x=0; x<item.length; x++) {
-            
-			        output = ''  
+			        output += ''  
 			        + '<div class="result-container container">'
-                        + '<div class="row">'  
+                        
+                        + '<div class="">'  
                             + prepareLocationOutput(item[x])
                             + prepareScoreOutput(item[x], 'budget')
              			+ '</div>'
+                        
                         +'<div class="weather-container row">'
                             + prepareWeatherOutput(item[x], startDayNumber, numberOfNights)
                         +'</div>'
-                        + '<div class="row">'  
+                        
+                        + '<div class="">'  
                             + prepareCarHotelOutput(item[x], startDayNumber, numberOfNights)
                         + '</div>'
+                        
                     + '</div>'
                     + '<br><br>';	                
 	                
@@ -176,7 +183,7 @@ $(document).ready(function(){
 
     function prepareLocationOutput(item){
     	var output = '';
-    	output += '<div class="location col-sm-4">'
+    	output += '<div class="location">'
     			+ item['city'] + ', ' + item['state']
     			+ '</div>';
     	return output;
@@ -185,7 +192,7 @@ $(document).ready(function(){
     function prepareScoreOutput(item, viewRequestType){
     		
     	if (viewRequestType == 'budget') {
-    	var output = '<div class="sortscore col-sm-4">';
+    	var output = '<div class="sortscore">';
     		output += '$'
     			   + item['sort_weight']+'</div>';
     	}
@@ -203,10 +210,9 @@ $(document).ready(function(){
     	}
     	
     	var output = '';
-
-
+		
     	for(var x=0; x<numNights; x++) {
-    		output += '<div class="weather-smallday col-sm-6 col-md-1">'
+    		output += '<div class="weather-smallday col-md-1">'
     				+ globalDates['day_abrv_' + toInteger(x + weatherDayIndex)]
     				+ '<br>'
 	    			+ object['high_'+ toInteger(x + weatherDayIndex)]  + ' | ' + object['low_'+ toInteger(x+weatherDayIndex)]

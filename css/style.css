@@ -136,10 +136,7 @@ body {
     background: rgba(255,0,255,0.9);
 }
 .result-container {
-
     font-size: 2em;
-    padding: 10px;
-    display: inline-block;
     background: rgba(255,255,255,0.9);
     color: black;
     border: white;
@@ -157,7 +154,6 @@ body {
 .weather-container {
     text-align: center;
     padding-bottom: 5px;
-    margin:auto;
 }
 
 .weather-smallday {
@@ -182,4 +178,8 @@ body {
 
 .budget-breakdown{
     display: none;
+}
+
+.debug{
+	background-color: white;
 }
