@@ -30,46 +30,49 @@
 
 <div class="container">
     
-    <div class="filter-control-border">
+    <div class="filter-control-border container">
         <div class="filter-controls row">
             
-            <div class="col-md-12">
+            <div class="col-xs-12">
+                
                 <div class="col-md-2">
-                    <label class="checkbox inline"><input id="car_checkbox" type="checkbox" value="true" checked>Car Rental</label>
-                    <label class="checkbox inline"><input id="hotel_checkbox" type="checkbox" value="true" checked>Hotel Stay</label>
+                	<div class="">
+               			<label class="checkbox inline"><input id="car_checkbox" type="checkbox" value="true" checked>Car Rental</label>
+	                </div>
+	                <div class="">
+	                <label class="checkbox inline"><input id="hotel_checkbox" type="checkbox" value="true" checked>Hotel Stay</label>	
+                	</div>
                 </div>            
         
                 <div class="col-md-8">
                     <div class="slider">
                         <p>
-                            <!--<label for="amount">Price range:</label>-->
-                            <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                            <input type="text" id="date-range-box" readonly style="border:0; color:#f6931f; font-weight:bold;">
                         </p>
-                        
                         <div id="slider-range"></div>
-                                    <div class="steps-2">
-                            <span class="tick">|<br>Today</span>
-                            <span class="tick" style="left: 11.1%;">|<br></span>
-                            <span class="tick" style="left: 22.2%;">|<br></span>
-                            <span class="tick" style="left: 33.3%;">|<br></span>
-                            <span class="tick" style="left: 44.4%;">|<br></span>
-                            <span class="tick" style="left: 55.5%;">|<br></span>
-                            <span class="tick" style="left: 66.6%;">|<br></span>
-                            <span class="tick" style="left: 77.7%;">|<br></span>
-                            <span class="tick" style="left: 88.8%;">|<br></span>
-                            <span class="tick" style="left: 99.9%;">|<br></span>
-                            <span class="tick" style="left: 100%;">|<br>+10</span>
-                        </div>
-                    </div>               
+                            <div class="steps-2">
+	                            <span class="tick">|<br>Today</span>
+	                            <span class="tick" style="left: 11.1%;">|<br></span>
+	                            <span class="tick" style="left: 22.2%;">|<br></span>
+	                            <span class="tick" style="left: 33.3%;">|<br></span>
+	                            <span class="tick" style="left: 44.4%;">|<br></span>
+	                            <span class="tick" style="left: 55.5%;">|<br></span>
+	                            <span class="tick" style="left: 66.6%;">|<br></span>
+	                            <span class="tick" style="left: 77.7%;">|<br></span>
+	                            <span class="tick" style="left: 88.8%;">|<br></span>
+	                            <span class="tick" style="left: 99.9%;">|<br></span>
+	                            <span class="tick" style="left: 100%;">|<br>+10</span>
+                        	</div>
+					</div>               
                 </div>
     
-                <div class="update col-sm-2">
+                <div class="update col-md-2">
                     <button type="button" class="update-button btn btn-default btn-lg">
-                      <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Filter
+                    	<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Filter
                     </button> 
                 </div>
+                
             </div>
-        
         </div>
     </div>
   	

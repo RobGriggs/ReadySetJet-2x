@@ -57,14 +57,14 @@ $(document).ready(function(){
 
 					//$element.css('left', newpos);
 	        		
-	            	//$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
-	          		$("#amount").val( globalDates[start] + " - " + globalDates[end]);
+	            	//$( "#date-range-box" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+	          		$("#date-range-box").val( globalDates[start] + " - " + globalDates[end]);
 
 	          	}
 	        });
 
 	        //output at page rendering
-	        $( "#amount" ).val( globalDates['day_long_0'] + ' - ' + globalDates['day_long_2'] );
+	        $( "#date-range-box" ).val( globalDates['day_long_0'] + ' - ' + globalDates['day_long_2'] );
 
 			//manually set slider postition var
 	        globalStartInt = 0;
@@ -161,12 +161,14 @@ $(document).ready(function(){
                             + prepareScoreOutput(item[x], 'budget')
              			+ '</div>'
                         
-                        +'<div class="weather-container row">'
-                            + prepareWeatherOutput(item[x], startDayNumber, numberOfNights)
+                        +'<div class="weather-container im-centered">'
+                        	+'<div class="big-center row">'
+                            	+ prepareWeatherOutput(item[x], startDayNumber, numberOfNights)
+                        	+'</div>'
                         +'</div>'
                         
                         + '<div class="">'  
-                            + prepareCarHotelOutput(item[x], startDayNumber, numberOfNights)
+                         /*   + prepareCarHotelOutput(item[x], startDayNumber, numberOfNights)*/
                         + '</div>'
                         
                     + '</div>'
@@ -212,11 +214,11 @@ $(document).ready(function(){
     	var output = '';
 		
     	for(var x=0; x<numNights; x++) {
-    		output += '<div class="weather-smallday col-md-1">'
-    				+ globalDates['day_abrv_' + toInteger(x + weatherDayIndex)]
-    				+ '<br>'
-	    			+ object['high_'+ toInteger(x + weatherDayIndex)]  + ' | ' + object['low_'+ toInteger(x+weatherDayIndex)]
-	    			+ '<img src="' + object['icon_url_'+toInteger(x + weatherDayIndex)] + '">'
+    		output += '<div class="weather-smallday">'
+	    				+ globalDates['day_abrv_' + toInteger(x + weatherDayIndex)]
+	    				+ '<br>'
+		    			+ object['high_'+ toInteger(x + weatherDayIndex)]  + ' | ' + object['low_'+ toInteger(x+weatherDayIndex)]
+		    			+ '<img src="' + object['icon_url_'+toInteger(x + weatherDayIndex)] + '">'
 	    			+ '</div>';
     	}
     	return output;    	

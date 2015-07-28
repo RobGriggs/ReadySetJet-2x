@@ -79,10 +79,10 @@ body {
     margin-top: 2%;
     margin-bottom: 2%;
     color: white;
+    text-align: center;
 }
 
 .ui-slider .ui-slider-handle {
-
     cursor: default;
     height: 1.2em;
     position: absolute;
@@ -95,6 +95,7 @@ body {
     /* width: 800px; */
     position: relative; 
     height: 30px;
+    margin-bottom: 15px;
 }
 
 .tick { 
@@ -115,6 +116,11 @@ body {
     left: 0;    
 }
 
+#date-range-box {
+	padding: 7px;
+	background: none;
+}
+
 /* Data output containers */
 /*.dataCore {
     postion: fixed;
@@ -132,9 +138,6 @@ body {
     left: 0;
 }*/
 
-.box{
-    background: rgba(255,0,255,0.9);
-}
 .result-container {
     font-size: 2em;
     background: rgba(255,255,255,0.9);
@@ -152,11 +155,12 @@ body {
 }
 
 .weather-container {
-    text-align: center;
+	text-align:center;
     padding-bottom: 5px;
 }
 
 .weather-smallday {
+	display: inline-block;
     border-style: solid;
     border-width: 1px;
     font-size: 12px;
@@ -182,4 +186,12 @@ body {
 
 .debug{
 	background-color: white;
+}
+
+.update-button{
+	text-align: center;
+}
+
+.im-centered { 
+	margin: auto;
 }
