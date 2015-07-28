@@ -121,6 +121,7 @@ $(document).ready(function(){
     
         $('.coreBox').fadeOut(function() {
             $(this).attr("class","dataCore").fadeIn();
+            $('#credits').attr("display","block").fadeIn();
             $('.filter-controls').attr("display","block").fadeIn();
             
             console.log('renderBudget');
@@ -172,7 +173,7 @@ $(document).ready(function(){
                         + '</div>'
                         
                     + '</div>'
-                    + '<br><br>';	                
+                    + '<br>';	                
 	                
 	                $subI++;
 	            }
