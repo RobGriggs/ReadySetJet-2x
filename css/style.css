@@ -65,8 +65,8 @@ body {
     position:absolute;
     top:0;
     right:0;
-    width: 50%;
     z-index: 100;
+    max-height: 75%;
 }
 
 /* Filtering and sorting topbar controls */
@@ -182,10 +182,6 @@ body {
 
 .budget-breakdown{
     display: none;
-}
-
-.debug{
-	background-color: white;
 }
 
 .update-button{
